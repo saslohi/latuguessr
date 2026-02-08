@@ -83,6 +83,7 @@ var geojsonMarkerOptionsArvaus = {
 
 var rastiLayer = L.featureGroup()
 var arvausLayer = L.featureGroup()
+var latuLayer = L.featureGroup()
 
 var rautatientori = {
   "rastinumero": 2,
@@ -116,7 +117,12 @@ function lataaRastitLayerille(rasti) {
   rastiTappa.addTo(rastiLayer)
 }
 
-rastit.forEach(lataaRastitLayerille)
+function lataaLatuLayerille(latu) {
+  let latuTappa = L.circleMarker([latu.latitude, latu.longitude], geojsonMarkerOptions)
+  latuTappa.bindPopup(`Onnittelut! Löysit ladun ${latu.nimi}! <br> <br> <img src="./latukuvat/${latu.id}.jpg" width="200px" height="auto">`)
+  latuTappa.addTo(latuLayer)
+}
+
 
 ladut.forEach(lataaRastitLayerille)
 
@@ -128,6 +134,10 @@ function lataaArvausLayerille(arvaus) {
 
 function naytaRastit() {
     rastiLayer.addTo(mymap)
+}
+
+function naytaLatuLayer() {
+  latuLayer.addTo(mymap)
 }
 
 function naytaArvaukset() {
@@ -237,9 +247,10 @@ async function tarkastaKuva() {
   if (etaisyys < 500) {
     naytettavaTeksti = `Rasti alle sadan metrin sisällä! Olet varsinainen latutietäjä! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
     <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
-    <button id="palaaKuvaVihjeeseenNappi">Palaa vihjeeseen</button>`
+    <button id="palaaKuvaVihjeeseenNappi">Seuraavalle ladulle</button>`
     lataaArvausLayerille(arvaus)
-    naytaRastit()
+    lataaLatuLayerille(arvattavaLatu)
+    naytaLatuLayer()
     naytaArvaukset()
     aktiivinenTehtava++;
     console.log(aktiivinenTehtava)
@@ -248,10 +259,11 @@ async function tarkastaKuva() {
     `Ladulle on vielä matkaa ${Math.round(etaisyys)} metrin verran... osuit aika lähelle! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
     <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
     <br><br>
-    <button id="palaaKuvaVihjeeseenNappi">Palaa vihjeeseen</button> `
+    <button id="palaaKuvaVihjeeseenNappi">Seuraavalle ladulle</button> `
    
     lataaArvausLayerille(arvaus)
-    naytaRastit()
+    lataaLatuLayerille(arvattavaLatu)
+    naytaLatuLayer()
     naytaArvaukset()
     console.log(aktiivinenTehtava)
     aktiivinenTehtava++;
@@ -293,6 +305,7 @@ function naytaInfo() {
   let infoteksti = `
   <h2>Tervetuloa Latuguessr-pelin pariin! </h2> 
   <br> Pelin tarkoituksena on paikantaa latuja kuvavihjeen perusteella <br>
+  <br> Jos osut alle kilometrin säteelle ladusta, olet "löytänyt" sen ja pääset siirtymään seuraavaan
   `
 
   document.getElementById("teksti").innerHTML = infoteksti
@@ -339,7 +352,7 @@ let ohjeet = `<button id="tarkastaArvausNappi">Tarkasta arvaus</button>`
   ohjeet = `
   <h1 style="text-align: center">Latuguessr</h1> 
   <br>
-  <img src="./latukuvat/${aktiivinenTehtava}.jpg" width="auto" height="450">
+  <img src="./latukuvat/${aktiivinenTehtava}.jpg">
   <br> <br> Missä sijaitsee kyseinen latu? <br>
   Paina arvelemaasi kohtaa kartalta ja sen jälkeen tarkista arvaus napista!<br> <br>
   <button id="tarkastaArvausNappi">Tarkasta arvaus</button>
