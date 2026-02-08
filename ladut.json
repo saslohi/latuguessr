@@ -1,0 +1,27 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [60.25694850556335, 24.917274059397137]
+      },
+      "properties": {
+        "kuva": "/latukuvat/2.jpg",
+        "name": "Paloheinä, Helsinki"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [67.6031504723185, 24.20617357397114]
+      },
+      "properties": {
+        "kuva": "/latukuvat/1.jpg",
+        "name": "Äkäslompolo, Kolari"
+      }
+    }
+  ]
+}

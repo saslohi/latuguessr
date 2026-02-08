@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+         <!-- Make sure you put this AFTER Leaflet's CSS -->
+         <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+         <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <div id="map"> 
+            <div class="leaflet-control-container">
+                <div id="alamenu" class="leaflet-bottom leaflet-left">
+                    <button id="naytaSijaintiNappi">Näytä kuvavihje</button>
+                    <button id="tarkastaRastiNappi">Tarkista ladun sijainti</button>
+                </div>
+                <div class="leaflet-control-container">
+                    <div id="ylamenu"class="leaflet-top leaflet-right">
+                        <button id="infoNappi">info</button>
+                      <!---  <button id="asetusNappi">Asetukset</button> -->
+                    </div>
+                </div>
+            </div>
+            <div id="tekstiruutu" class="teksti">
+                <div id="sulkunappi">
+                    <button id="ruksi"><b>x</b></button>
+                </div>
+                <div id="sisalto">
+                    <div id="teksti">
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="latuguessr.js" type="module" async defer></script>
+        <script src="ladut.js" type="module"></script>
+    </body>
+</html>
