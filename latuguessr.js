@@ -326,6 +326,11 @@ function piilotaLoota() {
 // 3 Kuvavihje
 
 function naytaKuvaVihje() {
+
+if (isMobile) {
+piilotaNapitKartalla()
+}
+
 console.log(ladut.length)
 console.log(aktiivinenTehtava)
 let ohjeet = `<button id="tarkastaArvausNappi">Tarkasta arvaus</button>`
@@ -347,7 +352,25 @@ let ohjeet = `<button id="tarkastaArvausNappi">Tarkasta arvaus</button>`
   document.getElementById("teksti").innerHTML = ohjeet
   document.getElementById("tekstiruutu").style.display = "block"
   document.getElementById("tarkastaArvausNappi").addEventListener('click', tarkastaKuva)
-  document.getElementById("piilotaVihjeNappi").addEventListener('click', piilotaLoota)  
+  document.getElementById("piilotaVihjeNappi").addEventListener('click', piilotaLoota)
+
+  if (isMobile) {
+  piilotaNapitKartalla()
+  document.getElementById("tarkastaArvausNappi").addEventListener('touchend', tarkastaKuva)
+  document.getElementById("piilotaVihjeNappi").addEventListener('touchend', () => { piilotaLoota(); naytaNapitKartalla() })
+  }
+}
+
+// Nappien piilotus kun vihje näkyy & reverse
+
+function piilotaNapitKartalla() {
+  document.getElementById("naytaSijaintiNappi").style.display = "none"
+  document.getElementById("tarkastaRastiNappi").style.display = "none"
+}
+
+function naytaNapitKartalla() {
+  document.getElementById("naytaSijaintiNappi").style.display = "block"
+  document.getElementById("tarkastaRastiNappi").style.display = "block"
 }
 
 // Mobiili vs Desktop säädöt
@@ -356,14 +379,16 @@ if (isMobile) {
   document.getElementById("naytaSijaintiNappi").addEventListener('touchend', naytaKuvaVihje)
   document.getElementById("infoNappi").addEventListener('touchend', naytaInfo)
   //document.getElementById("asetusNappi").addEventListener('touchend', naytaAsetukset)
-  document.getElementById("ruksi").addEventListener('touchend', piilotaLoota)
+  document.getElementById("ruksi").addEventListener('touchend', () => { piilotaLoota(); naytaNapitKartalla() })
   document.getElementById("tarkastaRastiNappi").addEventListener('touchend', tarkastaKuva)
+  document.getElementById("piilotaVihjeNappi").addEventListener('touchend', () => { piilotaLoota(); naytaNapitKartalla() })
 } else {
   document.getElementById("naytaSijaintiNappi").addEventListener('click', naytaKuvaVihje)
   document.getElementById("infoNappi").addEventListener('click', naytaInfo)
 //  document.getElementById("asetusNappi").addEventListener('click', naytaAsetukset)
   document.getElementById("ruksi").addEventListener('click', piilotaLoota)
   document.getElementById("tarkastaRastiNappi").addEventListener('click', tarkastaKuva)
+  document.getElementById("piilotaVihjeNappi").addEventListener('click', piilotaLoota)
 }
 
 // Ikkunan koon säädöt ikkunan koon muuttuessa 

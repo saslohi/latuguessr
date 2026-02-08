@@ -37,7 +37,8 @@ a {
 img {
     display: block;
     margin: auto;
-    width: 50%;
+    max-width: 100%;
+    max-height: 100%;
 }
 
 /* Header styling and header elements */
@@ -64,9 +65,9 @@ img {
 
 #tekstiruutu {
     position: absolute;
-    left: 10%;
+   /* left: 10%; */
     top: 25%;
-    right: 25%;
+    right: 2%;
     bottom: 25%;
     width: fit-content;
     height: fit-content;
@@ -77,7 +78,7 @@ img {
     -webkit-box-shadow: 2px 2px 5px #888;
     box-shadow: 2px 2x 4px #888;
     display: none;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.666);
      z-index: 1000;
 
 }
@@ -187,4 +188,44 @@ button:active {
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+
+
+/* Mobiili */
+
+@media screen and (max-width: 600px) {
+    #tekstiruutu {
+    position: absolute;
+   /* left: 10%; */
+    top: 30%;
+    right: 2%;
+    bottom: 5%;
+    width: 90%;
+    height: fit-content;
+    max-height: 80%;
+    min-width: 10%;
+    border-radius: 25px;
+    border: 4px solid #7596a1;
+    padding: 5px;
+    -webkit-box-shadow: 2px 2px 5px #888;
+    box-shadow: 2px 2x 4px #888;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.666);
+     z-index: 1000;
+    }
+
+#teksti {
+    padding-top: 1%;
+    padding-right: 1%;
+    margin-top: 1%;
+    }
+
+    img {
+      /*  height: 100%; */
+        width: auto;
+        max-height: 25vh;
+    }
+
+
+
 }
