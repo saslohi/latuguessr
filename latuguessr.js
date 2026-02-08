@@ -87,7 +87,7 @@ var arvausLayer = L.featureGroup()
 var rautatientori = {
   "rastinumero": 2,
   "nimi": "Paloheinä, Helsinki",
-  "kuva": "/latukuvat/2.jpg",
+  "kuva": "./latukuvat/2.jpg",
   "latitude": 60.25694850556335,
   "longitude": 24.917274059397137
 }
@@ -95,7 +95,7 @@ var rautatientori = {
 var capsa = {
   "rastinumero": 1,
   "nimi": "Äkäslompolo, Kolari",
-  "kuva": "/latukuvat/1.jpg",
+  "kuva": "./latukuvat/1.jpg",
   "latitude": 67.6031504723185,
   "longitude": 24.20617357397114
 }
@@ -112,7 +112,7 @@ let aktiivinenTehtava = 0;
 
 function lataaRastitLayerille(rasti) {
   let rastiTappa = L.circleMarker([rasti.latitude, rasti.longitude], geojsonMarkerOptions)
-  rastiTappa.bindPopup(`Onnittelut! Löysit ladun ${rasti.nimi}! <br> <br> <img src="/latukuvat/${rasti.id}.jpg" width="200px" height="auto">`)
+  rastiTappa.bindPopup(`Onnittelut! Löysit ladun ${rasti.nimi}! <br> <br> <img src="./latukuvat/${rasti.id}.jpg" width="200px" height="auto">`)
   rastiTappa.addTo(rastiLayer)
 }
 
@@ -236,7 +236,7 @@ async function tarkastaKuva() {
   
   if (etaisyys < 500) {
     naytettavaTeksti = `Rasti alle sadan metrin sisällä! Olet varsinainen latutietäjä! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
-    <img src="/latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
+    <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
     <button id="palaaKuvaVihjeeseenNappi">Palaa vihjeeseen</button>`
     lataaArvausLayerille(arvaus)
     naytaRastit()
@@ -246,7 +246,7 @@ async function tarkastaKuva() {
   } else if (etaisyys < 1001) {
     naytettavaTeksti = 
     `Ladulle on vielä matkaa ${Math.round(etaisyys)} metrin verran... osuit aika lähelle! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
-    <img src="/latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
+    <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
     <br><br>
     <button id="palaaKuvaVihjeeseenNappi">Palaa vihjeeseen</button> `
    
@@ -334,7 +334,7 @@ let ohjeet = `<button id="tarkastaArvausNappi">Tarkasta arvaus</button>`
   ohjeet = `
   <h1 style="text-align: center">Latuguessr</h1> 
   <br>
-  <img src="/latukuvat/${aktiivinenTehtava}.jpg" width="auto" height="450">
+  <img src="./latukuvat/${aktiivinenTehtava}.jpg" width="auto" height="450">
   <br> <br> Missä sijaitsee kyseinen latu? <br>
   Paina arvelemaasi kohtaa kartalta ja sen jälkeen tarkista arvaus napista!<br> <br>
   <button id="tarkastaArvausNappi">Tarkasta arvaus</button>
