@@ -3,19 +3,6 @@
 
 import {ladut} from "./ladut.js";
 
-
-
-// Etäisyyden laskentaan käytettävä funktio, napattu jostain Stackoverflowsta tms.
-
-function pythagoreanDistanceBetweenPoints(lat1, lon1, lat2, lon2) {
-    const R = 6371e3;
-    const x = (lon2-lon1) * Math.cos((lat1+lat2)/2);
-    const y = (lat2-lat1);
-    const d = Math.sqrt(x*x + y*y) * R;
-    return d/100;
-  }
-
-
 // Leaflet kartta-alusta, käytössä Helsingin kaupungin OSM karttatyyli
 
 var mymap = L.map('map', {
@@ -79,56 +66,29 @@ var geojsonMarkerOptionsArvaus = {
   fillOpacity: 0.8
 };
 
-// Rastit ja arvaukset niiden sijainnit
+// Ladut ja arvaukset niiden sijainnit
 
-var rastiLayer = L.featureGroup()
 var arvausLayer = L.featureGroup()
 var latuLayer = L.featureGroup()
-
-var rautatientori = {
-  "rastinumero": 2,
-  "nimi": "Paloheinä, Helsinki",
-  "kuva": "./latukuvat/2.jpg",
-  "latitude": 60.25694850556335,
-  "longitude": 24.917274059397137
-}
-
-var capsa = {
-  "rastinumero": 1,
-  "nimi": "Äkäslompolo, Kolari",
-  "kuva": "./latukuvat/1.jpg",
-  "latitude": 67.6031504723185,
-  "longitude": 24.20617357397114
-}
-
-const rastit = []
-rastit.push(rautatientori)
-rastit.push(capsa)
-
 
 const arvatutLadut = []
 const arvaustenMaara = 0
 let aktiivinenTehtava = 0;
 
 
-function lataaRastitLayerille(rasti) {
-  let rastiTappa = L.circleMarker([rasti.latitude, rasti.longitude], geojsonMarkerOptions)
-  rastiTappa.bindPopup(`Onnittelut! Löysit ladun ${rasti.nimi}! <br> <br> <img src="./latukuvat/${rasti.id}.jpg" width="200px" height="auto">`)
-  rastiTappa.addTo(rastiLayer)
-}
-
 function lataaLatuLayerille(latu) {
   let latuTappa = L.circleMarker([latu.latitude, latu.longitude], geojsonMarkerOptions)
-  latuTappa.bindPopup(`Onnittelut! Löysit ladun ${latu.nimi}! <br> <br> <img src="./latukuvat/${latu.id}.jpg" width="200px" height="auto">`)
+  latuTappa.bindPopup(`Onnittelut! Löysit ladun ${latu.nimi}! ${latu.kuvaus} <br> <br> <img src="./latukuvat/${latu.id}.jpg" width="200px" height="auto">`)
   latuTappa.addTo(latuLayer)
 }
 
 
-ladut.forEach(lataaRastitLayerille)
+ladut.forEach(lataaLatuLayerille)
 
 function lataaArvausLayerille(arvaus) {
   let arvausTappa = L.circleMarker([arvaus.latitude, arvaus.longitude], geojsonMarkerOptionsArvaus)
-  arvausTappa.bindPopup(`${arvaus.teksti}`)
+  arvausTappa.bindPopup(`${arvaus.teksti} <br>
+    ${arvaus.etaisyys}`)
   arvausTappa.addTo(arvausLayer)
 }
 
@@ -155,15 +115,15 @@ function piilotaArvaukset() {
 
 // Leafletin määrityksiä
 
-const options = {
+/* const options = {
   enableHighAccuracy: true,
   timeout: 5000,
   maximumAge: 0
-};
+}; */
 
-// Funktio jos position tarkastamiseen (ja voi lisätä sijainnin kartalle)
+// Funktio position tarkastamiseen (ja voi lisätä sijainnin kartalle) jos joskus kiinnostaa. pythagoreanDistance-funktio pitää korvata Leafletin omalla fiksummalla funktiolla joka antaa tarkempia tuloksia! Käytetään myös arvauksen ja ladun välisen etäisyyden määrittämiseen
 
-async function success(pos) {
+/* async function success(pos) {
   const crd = pos.coords;
   mylocation = crd;
 
@@ -181,7 +141,7 @@ async function success(pos) {
 
 function error(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
-}
+} */
 
 // Leaflet navigaattorin säädöt
 // watchPosition looppaa jatkuvasti, testataan toimiiko vaikka sen poistaa
@@ -195,7 +155,7 @@ function error(err) {
 
 
 // Funktio käyttäjän sijainnin näyttämiseen
-
+/* 
 async function naytaKayttajanSijainti() {
   navigator.geolocation.getCurrentPosition(success, error, options);
   document.getElementById("teksti").innerHTML = mylocation.latitude + " " + mylocation.longitude + "<br> Tarkkuudella n. " + mylocation.accuracy + " metriä."
@@ -209,7 +169,7 @@ async function naytaKayttajanSijainti() {
   mymap.flyTo([mylocation.latitude, mylocation.longitude], 15, {animate: true, duration: 0.75})
   document.getElementById("tekstiruutu").style.display = "block"
 }
-
+ */
 
 
 
@@ -219,7 +179,8 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 // Tarkastetaan onko käyttäjä lähellä rastia
 
-/* kommentoidaan malliksi
+/* kommentoidaan malliksi, jos haluaa toteuttaa maastossa suunnistuksen laduille esim.
+
 async function tarkastaRasti() {
   navigator.geolocation.getCurrentPosition(success, error, options);
   let etaisyys = pythagoreanDistanceBetweenPoints(mylocation.latitude, mylocation.longitude, capsa.latitude, capsa.longitude)
@@ -238,29 +199,38 @@ async function tarkastaRasti() {
 
 } */
 
+
+
+
 async function tarkastaKuva() {
   let arvattavaLatu = ladut[aktiivinenTehtava]
-  let etaisyys = pythagoreanDistanceBetweenPoints(arvaus.latitude, arvaus.longitude, arvattavaLatu.latitude, arvattavaLatu.longitude)
+  let arvattavaLtLng = L.latLng(arvattavaLatu.latitude, arvattavaLatu.longitude)
+  let arvausLtLng = L.latLng(arvaus.latitude, arvaus.longitude)
+  console.log(arvattavaLtLng)
+  console.log(arvausLtLng)
+  let distanceToLatu = arvausLtLng.distanceTo(arvattavaLtLng)
+  console.log("distanceToLatu: " + distanceToLatu)
+
   let naytettavaTeksti = "";
-  console.log(arvaus.latitude)
   
-  if (etaisyys < 500) {
-    naytettavaTeksti = `Rasti alle sadan metrin sisällä! Olet varsinainen latutietäjä! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
+  if (distanceToLatu < 500) {
+    naytettavaTeksti = `Latu alle 500 metrin sisällä! Olet varsinainen latutietäjä! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
     <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
     <button id="palaaKuvaVihjeeseenNappi">Seuraavalle ladulle</button>`
+    arvaus.etaisyys = "Arvauksesi osui " + Math.round(distanceToLatu) + " metrin päähän oikeasta!"
     lataaArvausLayerille(arvaus)
     lataaLatuLayerille(arvattavaLatu)
     naytaLatuLayer()
     naytaArvaukset()
     aktiivinenTehtava++;
     console.log(aktiivinenTehtava)
-  } else if (etaisyys < 1001) {
+  } else if (distanceToLatu < 1001) {
     naytettavaTeksti = 
-    `Ladulle on vielä matkaa ${Math.round(etaisyys)} metrin verran... osuit aika lähelle! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
+    `Ladulle on vielä matkaa ${Math.round(distanceToLatu)} metrin verran... osuit aika lähelle! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
     <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
     <br><br>
     <button id="palaaKuvaVihjeeseenNappi">Seuraavalle ladulle</button> `
-   
+    arvaus.etaisyys = "Arvauksesi osui " + Math.round(distanceToLatu) + " metrin päähän oikeasta!"
     lataaArvausLayerille(arvaus)
     lataaLatuLayerille(arvattavaLatu)
     naytaLatuLayer()
@@ -269,10 +239,11 @@ async function tarkastaKuva() {
     aktiivinenTehtava++;
   } else {
     naytettavaTeksti = 
-    `Ladulle on vielä matkaa ${Math.round(etaisyys)} metrin verran... kokeileppa uudestaan!
+    `Ladulle on vielä matkaa n. ${Math.round(distanceToLatu/1000)} kilometrin verran... kokeileppa uudestaan!
     <br><br>
     <button id="palaaKuvaVihjeeseenNappi">Palaa vihjeeseen</button>
     `
+    arvaus.etaisyys = "Arvauksesi osui " + Math.round(distanceToLatu/1000) + " kilometrin päähän oikeasta!"
     console.log(aktiivinenTehtava)
     lataaArvausLayerille(arvaus)
     naytaArvaukset()
@@ -287,7 +258,8 @@ async function tarkastaKuva() {
 let arvaus = {
   "latitude": "",
   "longitude": "",
-  "teksti": "Tähän arvasit ladun sijainnin!"
+  "teksti": "Tähän arvasit ladun sijainnin",
+  "etaisyys": "",
 }
 
 mymap.on('click', function(ev) {
@@ -306,6 +278,9 @@ function naytaInfo() {
   <h2>Tervetuloa Latuguessr-pelin pariin! </h2> 
   <br> Pelin tarkoituksena on paikantaa latuja kuvavihjeen perusteella <br>
   <br> Jos osut alle kilometrin säteelle ladusta, olet "löytänyt" sen ja pääset siirtymään seuraavaan
+  <br>
+  <br>
+  <br>
   `
 
   document.getElementById("teksti").innerHTML = infoteksti
@@ -314,7 +289,7 @@ function naytaInfo() {
 
 }
 
-// 2 Peliasetukset
+// 2 Peliasetukset. Ei ole toteutettu mitä asetukset tekevät. Eikä niitä käyttäjä edes näe.
 
 function naytaAsetukset() {
   let asetusteksti = `
@@ -355,8 +330,8 @@ let ohjeet = `<button id="tarkastaArvausNappi">Tarkasta arvaus</button>`
   <img src="./latukuvat/${aktiivinenTehtava}.jpg">
   <br> <br> Missä sijaitsee kyseinen latu? <br>
   Paina arvelemaasi kohtaa kartalta ja sen jälkeen tarkista arvaus napista!<br> <br>
-  <button id="tarkastaArvausNappi">Tarkasta arvaus</button>
-  <button id="piilotaVihjeNappi">Piilota</button>
+  <button id="tarkastaArvausNappi">Tarkista arvaus</button>
+  <button id="piilotaVihjeNappi">Piilota kuvaikkuna</button>
   `
   } else {
     ohjeet = `Onnittelut! Pelasit pelin läpi. Ei enää uusia latuja arvattavaksi!`
