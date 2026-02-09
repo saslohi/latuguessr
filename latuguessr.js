@@ -78,12 +78,12 @@ let aktiivinenTehtava = 0;
 
 function lataaLatuLayerille(latu) {
   let latuTappa = L.circleMarker([latu.latitude, latu.longitude], geojsonMarkerOptions)
-  latuTappa.bindPopup(`Onnittelut! Löysit ladun ${latu.nimi}! ${latu.kuvaus} <br> <br> <img src="./latukuvat/${latu.id}.jpg" width="200px" height="auto">`)
+  latuTappa.bindPopup(`Onnittelut! Löysit ladun ${latu.nimi}!<br> <br> <img src="./latukuvat/${latu.id}.jpg" width="200px" height="auto"><br>${latu.kuvaus}<br>`)
   latuTappa.addTo(latuLayer)
 }
 
 
-ladut.forEach(lataaLatuLayerille)
+// ladut.forEach(lataaLatuLayerille)
 
 function lataaArvausLayerille(arvaus) {
   let arvausTappa = L.circleMarker([arvaus.latitude, arvaus.longitude], geojsonMarkerOptionsArvaus)
@@ -215,7 +215,7 @@ async function tarkastaKuva() {
   
   if (distanceToLatu < 500) {
     naytettavaTeksti = `Latu alle 500 metrin sisällä! Olet varsinainen latutietäjä! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
-    <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
+    <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto"><br>${arvattavaLatu.kuvaus} <br><br>
     <button id="palaaKuvaVihjeeseenNappi">Seuraavalle ladulle</button>`
     arvaus.etaisyys = "Arvauksesi osui " + Math.round(distanceToLatu) + " metrin päähän oikeasta!"
     lataaArvausLayerille(arvaus)
@@ -227,9 +227,9 @@ async function tarkastaKuva() {
   } else if (distanceToLatu < 1001) {
     naytettavaTeksti = 
     `Ladulle on vielä matkaa ${Math.round(distanceToLatu)} metrin verran... osuit aika lähelle! Latu löytyy paikasta ${arvattavaLatu.nimi} <br>
-    <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto">
+    <img src="./latukuvat/${arvattavaLatu.id}.jpg" width="200px" height="auto"><br>${arvattavaLatu.kuvaus} <br>
     <br><br>
-    <button id="palaaKuvaVihjeeseenNappi">Seuraavalle ladulle</button> `
+    <button id="palaaKuvaVihjeeseenNappi">Seuraavalle ladulle</button>`
     arvaus.etaisyys = "Arvauksesi osui " + Math.round(distanceToLatu) + " metrin päähän oikeasta!"
     lataaArvausLayerille(arvaus)
     lataaLatuLayerille(arvattavaLatu)
@@ -237,9 +237,10 @@ async function tarkastaKuva() {
     naytaArvaukset()
     console.log(aktiivinenTehtava)
     aktiivinenTehtava++;
+ 
   } else {
     naytettavaTeksti = 
-    `Ladulle on vielä matkaa n. ${Math.round(distanceToLatu/1000)} kilometrin verran... kokeileppa uudestaan!
+    `Ladulle on vielä matkaa n. ${Math.round(distanceToLatu/1000)} kilometrin verran... <br> kokeileppa uudestaan!
     <br><br>
     <button id="palaaKuvaVihjeeseenNappi">Palaa vihjeeseen</button>
     `
@@ -252,6 +253,7 @@ async function tarkastaKuva() {
   document.getElementById("teksti").innerHTML = naytettavaTeksti
   document.getElementById("tekstiruutu").style.display = "block"
   document.getElementById("palaaKuvaVihjeeseenNappi").addEventListener('click', naytaKuvaVihje)
+ 
 
 }
 
